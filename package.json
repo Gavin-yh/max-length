@@ -1,0 +1,24 @@
+{
+  "name": "maxlength",
+  "version": "0.0.1",
+  "description": "限制contenteditable可编辑容器内容的长度，最大长度限制",
+  "main": "dist/index.js",
+  "module":"dist/index.js",
+  "author": "Gavin",
+  "homepage": "https://github.com/Gavin-yh/max-length",
+  "keywords": ["contenteditable", "max-length", "maxLength"],
+  "license": "ISC",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Gavin-yh/max-length.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gavin-yh/max-length/issues"
+  }
+}

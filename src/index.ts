@@ -1,28 +1,26 @@
-function maxLength(dom) {
+function maxLength(dom: HTMLElement) {
   let max = 10;
   let meta = {
     innerText: "",
     innerHTML: "",
   };
 
-  let fragment;
+  let fragment: DocumentFragment;
 
-  dom.addEventListener("keydown", (e) => {
-    if (e.target.innerText.length >= 10 && e.keyCode !== 8) {
+  dom.addEventListener("keydown", (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+
+    if (target.innerText.length >= 10 && e.keyCode !== 8) {
       e.preventDefault();
     }
   });
 
-  dom.addEventListener("compositionstart", (e) => {
+  dom.addEventListener("compositionstart", (e: CompositionEvent) => {
     meta.innerHTML = dom.innerHTML;
     meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
   });
 
-  dom.addEventListener("compositionupdate", (e) => {
-    e.preventDefault();
-  });
-
-  dom.addEventListener("compositionend", (e) => {
+  dom.addEventListener("compositionend", (e: CompositionEvent) => {
     const diff = max - meta.innerText.length;
 
     // 证明输入的多了，要截取然后插入
@@ -47,4 +45,5 @@ function maxLength(dom) {
 }
 
 let dom = document.getElementById("con");
+
 maxLength(dom);

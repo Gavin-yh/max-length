@@ -6,21 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-      #con {
-        width: 100%;
-        height: 300px;
+      .wrap {
+        margin: 0 auto;
+        width: 600px;
+      }
+
+      #editor {
+        height: 200px;
         border: 1px solid;
         padding: 8px;
+        outline: none;
+        border: 1px solid #c1c1c1;
+        
       }
     </style>
 </head>
 <body>
-  <div id="con" contenteditable>
+  <div class="wrap">
+    <div id="editor" contenteditable>
 
+    </div>
+
+    <div>
+      当前输入的文字长度：<span id="tips"></span>
+    </div>
   </div>
   
 
-  <script src="../src/index.js"></script>
+  <script type="module">
+    import maxLength from '../dist/index.esm.js'
+    const editor = document.getElementById('editor')
+    const tips = document.getElementById('tips')
+
+    maxLength({
+      dom: editor,
+      maxLength: 10
+    })
+
+    setInterval(() => {
+      tips.innerHTML = editor.innerText.length
+    })
   </script>
 </body>
 </html>

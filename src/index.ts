@@ -1,49 +1,90 @@
-function maxLength(dom: HTMLElement) {
-  let max = 10;
-  let meta = {
-    innerText: "",
-    innerHTML: "",
+export type options = {
+  dom: HTMLElement;
+  maxLength: number;
+};
+
+const meta = {
+  innerText: "",
+  innerHTML: "",
+};
+
+let fragment: DocumentFragment;
+
+const maxLength = (options: options) => {
+  const { dom, maxLength } = options;
+
+  const onCompositionstart = (e: CompositionEvent) => {
+    meta.innerHTML = dom.innerHTML;
+    meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
   };
 
-  let fragment: DocumentFragment;
+  const onCompositionend = (e: CompositionEvent) => {
+    const diff = maxLength - meta.innerText.length;
 
-  dom.addEventListener("keydown", (e: KeyboardEvent) => {
+    // 输入多了，要截取
+    if (diff < e.data.length) {
+      onInsertContent(e.data, diff);
+    }
+  };
+
+  const onPaste = (e: ClipboardEvent) => {
+    if ("ActiveXObject" in window) return;
+    meta.innerHTML = dom.innerHTML;
+    meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
+
+    const diff = maxLength - meta.innerText.length;
+
+    const clipboardData = e.clipboardData;
+    let pasteText = "";
+
+    if (clipboardData == null) {
+      pasteText =
+        (window as any).clipboardData &&
+        (window as any).clipboardData.getData("text");
+    } else {
+      pasteText = clipboardData.getData("text/plain");
+    }
+
+    if (diff < pasteText.length) {
+      // 阻止默认粘贴行为
+      e.preventDefault();
+      onInsertContent(pasteText, diff);
+    }
+  };
+
+  const onKeydown = (e: KeyboardEvent) => {
     const target = e.target as HTMLElement;
 
     if (target.innerText.length >= 10 && e.keyCode !== 8) {
       e.preventDefault();
     }
-  });
+  };
 
-  dom.addEventListener("compositionstart", (e: CompositionEvent) => {
-    meta.innerHTML = dom.innerHTML;
-    meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
-  });
+  const onInsertContent = (text: string, diff: number) => {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const data = text.slice(0, diff);
 
-  dom.addEventListener("compositionend", (e: CompositionEvent) => {
-    const diff = max - meta.innerText.length;
+    const result = meta.innerHTML.trim() + data;
 
-    // 证明输入的多了，要截取然后插入
-    if (diff < e.data.length) {
-      const selection = window.getSelection();
-      const range = selection.getRangeAt(0);
+    fragment = document.createDocumentFragment();
 
-      const data = e.data.slice(0, diff);
-      const result = meta.innerHTML + data;
+    dom.innerHTML = "";
 
-      fragment = document.createDocumentFragment();
+    fragment.append(result);
 
-      dom.innerHTML = "";
+    range.insertNode(fragment);
 
-      fragment.append(result);
+    range.collapse();
+  };
 
-      range.insertNode(fragment);
+  dom.addEventListener("keydown", onKeydown);
 
-      range.collapse();
-    }
-  });
-}
+  dom.addEventListener("paste", onPaste);
 
-let dom = document.getElementById("con");
+  dom.addEventListener("compositionstart", onCompositionstart);
 
-maxLength(dom);
+  dom.addEventListener("compositionend", onCompositionend);
+};
+
+export default maxLength;

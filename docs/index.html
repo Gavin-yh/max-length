@@ -19,6 +19,11 @@
         border: 1px solid #c1c1c1;
       }
 
+      #input {
+        width: 50px;
+        outline: none;
+      }
+      
       .footer {
         color: #979292;
         margin-top: 10px;
@@ -35,6 +40,7 @@
     </div>
 
     <div class="footer">
+      限制字符的长度：<input id="input"/>；
       当前输入的文字长度：<span id="tips"></span>
     </div>
   </div>
@@ -42,8 +48,15 @@
 
   <script type="module">
     import maxLength from './index.esm.js'
-    const editor = document.getElementById('editor')
-    const tips = document.getElementById('tips')
+
+    input.addEventListener('input', (e) => {
+      if (Number(input.value)) {
+        maxLength({
+          dom: editor,
+          maxLength: Number(input.value)
+        })
+      }
+    })
 
     maxLength({
       dom: editor,

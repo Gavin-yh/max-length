@@ -1,8 +1,8 @@
 # max-length
 
 <!-- Badge -->
-![gitHub tag badge](https://img.shields.io/github/v/tag/Gavin-yh/maxlength)
-![gitHub release badge](https://img.shields.io/github/v/release/Gavin-yh/maxlength)
+![gitHub tag badge](https://img.shields.io/github/v/tag/Gavin-yh/max-length)
+![gitHub release badge](https://img.shields.io/github/v/release/Gavin-yh/max-length)
 ![npm badge](https://img.shields.io/npm/v/maxlength)
 ![gitHub repo size badge](https://img.shields.io/github/repo-size/Gavin-yh/max-length)
 ![jest badge badge](https://img.shields.io/badge/unit%20test-jest-yellowgreen)
@@ -20,13 +20,11 @@
   </p>
 </p>
 
-<br />
 
 ##  介绍
 
 contenteditable可编辑容器的内容长度限制。一般利用contenteditable实现的可以输入区域，很难做到限制其输入的长度。这个库处理了英文输入、输入法输入、复制粘贴等情况，限制其内容的长度。
 
-<br />
 
 ## maxlength API
 需要传入一个options配置项
@@ -40,7 +38,6 @@ maxlength({
 })
 ```
 
-<br />
 
 ## 安装和使用
 ### NPM
@@ -61,8 +58,6 @@ maxLength({
   maxLength: 10
 }
 ```
-
-<br />
 
 html结构
 ```html

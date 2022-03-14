@@ -9,6 +9,10 @@ const config = {
     }, {
       file: 'dist/index.cjs.js', // package.json 中 "main": "dist/index.cjs.js",
       format: 'cjs', // commonjs 形式的包， require 导入 
+    }, {
+      file: 'dist/index.min.js',
+      format: 'iife',
+      name: 'maxLength'
     }
   ],
   plugins: [

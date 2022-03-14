@@ -7,3 +7,5 @@ node_modules/
 example/
 scripts/
 jest.config.js
+config
+docs

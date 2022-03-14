@@ -1,9 +1,9 @@
 {
   "name": "maxlength",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "限制contenteditable可编辑容器内容的长度，最大长度限制",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "types": "src/index.ts",
   "author": "Gavin",
   "homepage": "https://github.com/Gavin-yh/max-length",

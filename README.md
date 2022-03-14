@@ -40,6 +40,19 @@ maxlength({
 
 
 ## 安装和使用
+### CDN
+```js
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maxlength@latest/dist/index.min.js"></script>
+
+<script>
+  const editor = document.getElementById('editor')
+
+  maxLength({
+    dom: editor,
+    maxLength: 10
+  }
+</script>
+```
 ### NPM
 安装maxlength
 ```base

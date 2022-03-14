@@ -1,9 +1,9 @@
 # max-length
 
 <!-- Badge -->
-![npm badge](https://img.shields.io/npm/v/max-length)
-<!-- ![gitHub release badge](https://img.shields.io/github/v/release/Gavin-yh/max-length) -->
-<!-- ![gitHub tag badge](https://img.shields.io/github/v/tag/Gavin-yh/max-length) -->
+![gitHub tag badge](https://img.shields.io/github/v/tag/Gavin-yh/maxlength)
+![gitHub release badge](https://img.shields.io/github/v/release/Gavin-yh/maxlength)
+![npm badge](https://img.shields.io/npm/v/maxlength)
 ![gitHub repo size badge](https://img.shields.io/github/repo-size/Gavin-yh/max-length)
 ![jest badge badge](https://img.shields.io/badge/unit%20test-jest-yellowgreen)
 

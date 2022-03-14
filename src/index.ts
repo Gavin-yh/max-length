@@ -13,6 +13,10 @@ let fragment: DocumentFragment;
 const maxLength = (options: options) => {
   const { dom, maxLength } = options;
 
+  if (!dom || !maxLength) {
+    return;
+  }
+
   const onCompositionstart = (e: CompositionEvent) => {
     meta.innerHTML = dom.innerHTML;
     meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行

@@ -1,0 +1,9 @@
+.husky/
+.github/
+.vscode
+__test__/
+src/
+node_modules/
+example/
+scripts/
+jest.config.js

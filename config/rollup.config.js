@@ -13,6 +13,10 @@ const config = {
       file: 'dist/index.min.js',
       format: 'iife',
       name: 'maxLength'
+    },
+    {
+      file: 'docs/index.esm.js',
+      format: 'esm',
     }
   ],
   plugins: [

@@ -48,10 +48,18 @@
 
   <script type="module">
     import maxLength from './index.esm.js'
-
+    let unsubscribe = null
+    
     input.addEventListener('input', (e) => {
       if (Number(input.value)) {
-        maxLength({
+
+        if (unsubscribe) {
+            unsubscribe()
+
+            unsubscribe = null
+        }
+
+        unsubscribe = maxLength({
           dom: editor,
           maxLength: Number(input.value)
         })

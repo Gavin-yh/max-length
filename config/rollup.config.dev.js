@@ -15,7 +15,7 @@ config.plugins = [
   ...[
     serve({
       port: PORT,
-      contentBase: [resolveFile('example'), resolveFile('dist')]
+      contentBase: [resolveFile('docs')]
     })
   ]
 ]

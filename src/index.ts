@@ -59,7 +59,7 @@ const maxLength = (options: options) => {
   const onKeydown = (e: KeyboardEvent) => {
     const target = e.target as HTMLElement;
 
-    if (target.innerText.length >= 10 && e.keyCode !== 8) {
+    if (target.innerText.length >= maxLength && e.keyCode !== 8) {
       e.preventDefault();
     }
   };
@@ -89,6 +89,16 @@ const maxLength = (options: options) => {
   dom.addEventListener("compositionstart", onCompositionstart);
 
   dom.addEventListener("compositionend", onCompositionend);
+
+  return () => {
+    dom.removeEventListener("keydown", onKeydown);
+
+    dom.removeEventListener("paste", onPaste);
+
+    dom.removeEventListener("compositionstart", onCompositionstart);
+
+    dom.removeEventListener("compositionend", onCompositionend);
+  };
 };
 
 export default maxLength;

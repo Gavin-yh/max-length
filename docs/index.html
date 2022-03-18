@@ -20,7 +20,7 @@
       }
 
       #input {
-        width: 50px;
+        width: 100px;
         outline: none;
       }
       
@@ -49,21 +49,37 @@
   <script type="module">
     import maxLength from './index.esm.js'
     let unsubscribe = null
-    
+    let time
     input.addEventListener('input', (e) => {
-      if (Number(input.value)) {
+        if (!Number(input.value) || Number(input.value) <= 0) {
+            time ? 
+                '' :
+                time = setTimeout(() => {
+                    window.alert('请输入正整数')
 
-        if (unsubscribe) {
-            unsubscribe()
+                    input.value = ''
 
-            unsubscribe = null
+                    clearTimeout(time)
+
+                    time = null
+                }, 2000)
+
+            return
         }
 
-        unsubscribe = maxLength({
-          dom: editor,
-          maxLength: Number(input.value)
-        })
-      }
+        if (Number(input.value)) {
+
+            if (unsubscribe) {
+                unsubscribe()
+
+                unsubscribe = null
+            }
+
+            unsubscribe = maxLength({
+                dom: editor,
+                maxLength: Number(input.value)
+            })
+        }
     })
 
     setInterval(() => {

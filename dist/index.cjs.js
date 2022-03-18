@@ -10,7 +10,13 @@ var maxLength = function (options) {
     if (!dom || !maxLength) {
         return;
     }
-    var onCompositionstart = function (e) {
+    var onCompositionstart = function () {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        var span = document.createElement('span');
+        span.classList.add('template_span');
+        range.insertNode(span);
+        // 保存原始的html
         meta.innerHTML = dom.innerHTML;
         meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
     };
@@ -20,8 +26,12 @@ var maxLength = function (options) {
         if (diff < e.data.length) {
             onInsertContent(e.data, diff);
         }
+        else {
+            clearTemplateSpan();
+        }
     };
     var onPaste = function (e) {
+        onCompositionstart();
         if ("ActiveXObject" in window)
             return;
         meta.innerHTML = dom.innerHTML;
@@ -42,6 +52,9 @@ var maxLength = function (options) {
             e.preventDefault();
             onInsertContent(pasteText, diff);
         }
+        else {
+            clearTemplateSpan();
+        }
     };
     var onKeydown = function (e) {
         var target = e.target;
@@ -53,13 +66,22 @@ var maxLength = function (options) {
         var selection = window.getSelection();
         var range = selection.getRangeAt(0);
         var data = text.slice(0, diff);
-        var result = meta.innerHTML.trim() + data;
+        dom.innerHTML = meta.innerHTML;
+        var templateSpan = document.getElementsByClassName('template_span')[0];
+        range.selectNode(templateSpan);
+        range.deleteContents();
         fragment = document.createDocumentFragment();
-        dom.innerHTML = "";
-        fragment.append(result);
+        fragment.append(data);
         range.insertNode(fragment);
         range.collapse();
     };
+    function clearTemplateSpan() {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        var templateSpan = document.getElementsByClassName('template_span')[0];
+        range.selectNode(templateSpan);
+        range.deleteContents();
+    }
     dom.addEventListener("keydown", onKeydown);
     dom.addEventListener("paste", onPaste);
     dom.addEventListener("compositionstart", onCompositionstart);

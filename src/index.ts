@@ -17,7 +17,16 @@ const maxLength = (options: options) => {
     return;
   }
 
-  const onCompositionstart = (e: CompositionEvent) => {
+  const onCompositionstart = () => {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const span = document.createElement("span");
+
+    span.classList.add("template_span");
+
+    range.insertNode(span);
+
+    // 保存原始的html
     meta.innerHTML = dom.innerHTML;
     meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
   };
@@ -28,10 +37,14 @@ const maxLength = (options: options) => {
     // 输入多了，要截取
     if (diff < e.data.length) {
       onInsertContent(e.data, diff);
+    } else {
+      clearTemplateSpan();
     }
   };
 
   const onPaste = (e: ClipboardEvent) => {
+    onCompositionstart();
+
     if ("ActiveXObject" in window) return;
     meta.innerHTML = dom.innerHTML;
     meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
@@ -53,6 +66,8 @@ const maxLength = (options: options) => {
       // 阻止默认粘贴行为
       e.preventDefault();
       onInsertContent(pasteText, diff);
+    } else {
+      clearTemplateSpan();
     }
   };
 
@@ -69,18 +84,33 @@ const maxLength = (options: options) => {
     const range = selection.getRangeAt(0);
     const data = text.slice(0, diff);
 
-    const result = meta.innerHTML.trim() + data;
+    dom.innerHTML = meta.innerHTML;
+
+    const templateSpan = document.getElementsByClassName("template_span")[0];
+
+    range.selectNode(templateSpan);
+
+    range.deleteContents();
 
     fragment = document.createDocumentFragment();
 
-    dom.innerHTML = "";
-
-    fragment.append(result);
+    fragment.append(data);
 
     range.insertNode(fragment);
 
     range.collapse();
   };
+
+  function clearTemplateSpan() {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+
+    const templateSpan = document.getElementsByClassName("template_span")[0];
+
+    range.selectNode(templateSpan);
+
+    range.deleteContents();
+  }
 
   dom.addEventListener("keydown", onKeydown);
 

@@ -11,8 +11,8 @@ var maxLength = function (options) {
     var onCompositionstart = function () {
         var selection = window.getSelection();
         var range = selection.getRangeAt(0);
-        var span = document.createElement('span');
-        span.classList.add('template_span');
+        var span = document.createElement("span");
+        span.classList.add("template_span");
         range.insertNode(span);
         // 保存原始的html
         meta.innerHTML = dom.innerHTML;
@@ -65,7 +65,7 @@ var maxLength = function (options) {
         var range = selection.getRangeAt(0);
         var data = text.slice(0, diff);
         dom.innerHTML = meta.innerHTML;
-        var templateSpan = document.getElementsByClassName('template_span')[0];
+        var templateSpan = document.getElementsByClassName("template_span")[0];
         range.selectNode(templateSpan);
         range.deleteContents();
         fragment = document.createDocumentFragment();
@@ -76,7 +76,7 @@ var maxLength = function (options) {
     function clearTemplateSpan() {
         var selection = window.getSelection();
         var range = selection.getRangeAt(0);
-        var templateSpan = document.getElementsByClassName('template_span')[0];
+        var templateSpan = document.getElementsByClassName("template_span")[0];
         range.selectNode(templateSpan);
         range.deleteContents();
     }

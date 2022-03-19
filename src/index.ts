@@ -80,17 +80,10 @@ const maxLength = (options: options) => {
   };
 
   const onInsertContent = (text: string, diff: number) => {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
+    dom.innerHTML = meta.innerHTML;
     const data = text.slice(0, diff);
 
-    dom.innerHTML = meta.innerHTML;
-
-    const templateSpan = document.getElementsByClassName("template_span")[0];
-
-    range.selectNode(templateSpan);
-
-    range.deleteContents();
+    const range = clearTemplateSpan();
 
     fragment = document.createDocumentFragment();
 
@@ -110,6 +103,8 @@ const maxLength = (options: options) => {
     range.selectNode(templateSpan);
 
     range.deleteContents();
+
+    return range;
   }
 
   dom.addEventListener("keydown", onKeydown);

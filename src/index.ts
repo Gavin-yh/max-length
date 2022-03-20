@@ -1,8 +1,3 @@
-export type options = {
-  dom: HTMLElement;
-  maxLength: number;
-};
-
 const meta = {
   innerText: "",
   innerHTML: "",
@@ -10,7 +5,9 @@ const meta = {
 
 let fragment: DocumentFragment;
 
-const maxLength = (options: options) => {
+const UUID = `max-length-02a54070-d0f2-47d`;
+
+const maxLength = (options: { dom: HTMLElement; maxLength: number }) => {
   const { dom, maxLength } = options;
 
   if (!dom || !maxLength) {
@@ -18,11 +15,11 @@ const maxLength = (options: options) => {
   }
 
   const onCompositionstart = () => {
-    const selection = window.getSelection();
+    const selection = window.getSelection()!;
     const range = selection.getRangeAt(0);
     const span = document.createElement("span");
 
-    span.classList.add("template_span");
+    span.classList.add(UUID);
 
     range.insertNode(span);
 
@@ -95,10 +92,10 @@ const maxLength = (options: options) => {
   };
 
   function clearTemplateSpan() {
-    const selection = window.getSelection();
+    const selection = window.getSelection()!;
     const range = selection.getRangeAt(0);
 
-    const templateSpan = document.getElementsByClassName("template_span")[0];
+    const templateSpan = document.getElementsByClassName(UUID)[0];
 
     range.selectNode(templateSpan);
 

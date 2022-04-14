@@ -45,15 +45,25 @@ const maxLength = (options: { dom: HTMLElement; maxLength: number }) => {
   const onCompositionend = (e: CompositionEvent) => {
     const diff = maxLength - meta.innerText.length;
 
+    // 当已经输入最大时，清空数据就行
+    if (diff === 0) {
+      clearTemplateSpan();
+
+      return;
+    }
+
     // 输入多了，要截取
     if (diff < e.data.length) {
       onInsertContent(e.data, diff);
     } else {
-      clearTemplateSpan();
+      onInsertContent(e.data);
     }
   };
 
   const onPaste = (e: ClipboardEvent) => {
+    // 阻止默认粘贴行为
+    e.preventDefault();
+
     onCompositionstart();
 
     if ("ActiveXObject" in window) return;
@@ -73,12 +83,17 @@ const maxLength = (options: { dom: HTMLElement; maxLength: number }) => {
       pasteText = clipboardData.getData("text/plain");
     }
 
+    // 当已经输入最大时，清空数据就行
+    if (diff === 0) {
+      clearTemplateSpan();
+
+      return;
+    }
+
     if (diff < pasteText.length) {
-      // 阻止默认粘贴行为
-      e.preventDefault();
       onInsertContent(pasteText, diff);
     } else {
-      clearTemplateSpan();
+      onInsertContent(pasteText);
     }
   };
 
@@ -90,8 +105,12 @@ const maxLength = (options: { dom: HTMLElement; maxLength: number }) => {
     }
   };
 
-  const onInsertContent = (text: string, diff: number) => {
-    const data = text.slice(0, diff);
+  const onInsertContent = (text: string, diff?: number) => {
+    let data = text;
+
+    if (diff) {
+      data = text.slice(0, diff);
+    }
 
     const range = clearTemplateSpan();
 

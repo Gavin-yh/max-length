@@ -1,6 +1,6 @@
 const meta = {
   innerText: "",
-  innerHTML: "",
+  innerHTML: "", // 废弃
 };
 
 let fragment: DocumentFragment;
@@ -14,14 +14,28 @@ const maxLength = (options: { dom: HTMLElement; maxLength: number }) => {
     return;
   }
 
-  const onCompositionstart = () => {
-    const selection = window.getSelection()!;
-    const range = selection.getRangeAt(0);
+  const createTemplateSpan = () => {
     const span = document.createElement("span");
+    span.contentEditable = "true";
+    span.style.display = "inline-block";
+    span.style.minHeight = "1px";
+    span.style.minWidth = "1px";
 
     span.classList.add(UUID);
 
+    return span;
+  };
+
+  const onCompositionstart = () => {
+    const selection = window.getSelection()!;
+    const range = selection.getRangeAt(0);
+    const span = createTemplateSpan();
+
     range.insertNode(span);
+
+    selection.removeAllRanges();
+
+    selection.selectAllChildren(span);
 
     // 保存原始的html
     meta.innerHTML = dom.innerHTML;
@@ -77,7 +91,6 @@ const maxLength = (options: { dom: HTMLElement; maxLength: number }) => {
   };
 
   const onInsertContent = (text: string, diff: number) => {
-    dom.innerHTML = meta.innerHTML;
     const data = text.slice(0, diff);
 
     const range = clearTemplateSpan();

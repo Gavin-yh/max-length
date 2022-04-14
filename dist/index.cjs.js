@@ -1,1 +1,104 @@
-"use strict";var e,n={innerText:"",innerHTML:""},t="max-length-02a54070-d0f2-47d";module.exports=function(r){var i=r.dom,a=r.maxLength;if(i&&a){var o=function(){var e=window.getSelection().getRangeAt(0),r=document.createElement("span");r.classList.add(t),e.insertNode(r),n.innerHTML=i.innerHTML,n.innerText=i.innerText.replace(/\r|\n|(\r\n)/g,"")},d=function(e){var t=a-n.innerText.length;t<e.data.length?l(e.data,t):v()},c=function(e){if(o(),!("ActiveXObject"in window)){n.innerHTML=i.innerHTML,n.innerText=i.innerText.replace(/\r|\n|(\r\n)/g,"");var t=a-n.innerText.length,r=e.clipboardData,d="";t<(d=null==r?window.clipboardData&&window.clipboardData.getData("text"):r.getData("text/plain")).length?(e.preventDefault(),l(d,t)):v()}},s=function(e){e.target.innerText.length>=a&&8!==e.keyCode&&e.preventDefault()},l=function(t,r){i.innerHTML=n.innerHTML;var a=t.slice(0,r),o=v();(e=document.createDocumentFragment()).append(a),o.insertNode(e),o.collapse()};return i.addEventListener("keydown",s),i.addEventListener("paste",c),i.addEventListener("compositionstart",o),i.addEventListener("compositionend",d),function(){i.removeEventListener("keydown",s),i.removeEventListener("paste",c),i.removeEventListener("compositionstart",o),i.removeEventListener("compositionend",d)}}function v(){var e=window.getSelection().getRangeAt(0),n=document.getElementsByClassName(t)[0];return e.selectNode(n),e.deleteContents(),e}};
+'use strict';
+
+var meta = {
+    innerText: "",
+    innerHTML: "", // 废弃
+};
+var fragment;
+var UUID = "max-length-02a54070-d0f2-47d";
+var maxLength = function (options) {
+    var dom = options.dom, maxLength = options.maxLength;
+    if (!dom || !maxLength) {
+        return;
+    }
+    var createTemplateSpan = function () {
+        var span = document.createElement("span");
+        span.contentEditable = 'true';
+        span.style.display = 'inline-block';
+        span.style.minHeight = '1px';
+        span.style.minWidth = '1px';
+        span.classList.add(UUID);
+        return span;
+    };
+    var onCompositionstart = function () {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        var span = createTemplateSpan();
+        range.insertNode(span);
+        selection.removeAllRanges();
+        selection.selectAllChildren(span);
+        // 保存原始的html
+        meta.innerHTML = dom.innerHTML;
+        meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
+    };
+    var onCompositionend = function (e) {
+        var diff = maxLength - meta.innerText.length;
+        // 输入多了，要截取
+        if (diff < e.data.length) {
+            onInsertContent(e.data, diff);
+        }
+        else {
+            clearTemplateSpan();
+        }
+    };
+    var onPaste = function (e) {
+        onCompositionstart();
+        if ("ActiveXObject" in window)
+            return;
+        meta.innerHTML = dom.innerHTML;
+        meta.innerText = dom.innerText.replace(/\r|\n|(\r\n)/g, ""); // 去掉换行
+        var diff = maxLength - meta.innerText.length;
+        var clipboardData = e.clipboardData;
+        var pasteText = "";
+        if (clipboardData == null) {
+            pasteText =
+                window.clipboardData &&
+                    window.clipboardData.getData("text");
+        }
+        else {
+            pasteText = clipboardData.getData("text/plain");
+        }
+        if (diff < pasteText.length) {
+            // 阻止默认粘贴行为
+            e.preventDefault();
+            onInsertContent(pasteText, diff);
+        }
+        else {
+            clearTemplateSpan();
+        }
+    };
+    var onKeydown = function (e) {
+        var target = e.target;
+        if (target.innerText.length >= maxLength && e.keyCode !== 8) {
+            e.preventDefault();
+        }
+    };
+    var onInsertContent = function (text, diff) {
+        var data = text.slice(0, diff);
+        var range = clearTemplateSpan();
+        fragment = document.createDocumentFragment();
+        fragment.append(data);
+        range.insertNode(fragment);
+        range.collapse();
+    };
+    function clearTemplateSpan() {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        var templateSpan = document.getElementsByClassName(UUID)[0];
+        range.selectNode(templateSpan);
+        range.deleteContents();
+        return range;
+    }
+    dom.addEventListener("keydown", onKeydown);
+    dom.addEventListener("paste", onPaste);
+    dom.addEventListener("compositionstart", onCompositionstart);
+    dom.addEventListener("compositionend", onCompositionend);
+    return function () {
+        dom.removeEventListener("keydown", onKeydown);
+        dom.removeEventListener("paste", onPaste);
+        dom.removeEventListener("compositionstart", onCompositionstart);
+        dom.removeEventListener("compositionend", onCompositionend);
+    };
+};
+
+module.exports = maxLength;

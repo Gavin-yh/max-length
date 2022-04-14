@@ -9,3 +9,5 @@ scripts/
 jest.config.js
 config
 docs
+test/
+tsconfig.json
